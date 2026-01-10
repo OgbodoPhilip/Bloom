@@ -10,8 +10,12 @@ import { authClient } from '@/lib/auth-client'
 import z from 'zod'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
+import { useTransition } from 'react'
+import { start } from 'repl'
+import { Loader2 } from 'lucide-react'
 
 export default function SignUpPage() {
+      const [isPending,startTransition] = useTransition();
     const router = useRouter();
     const form = useForm({
         resolver:zodResolver(signUpSchema),
@@ -23,8 +27,9 @@ export default function SignUpPage() {
 
     })
 
-   async function onSubmit(data:z.infer<typeof signUpSchema>){
-    await authClient.signUp.email({
+   function onSubmit(data:z.infer<typeof signUpSchema>){
+    startTransition(async ()=>{
+         await authClient.signUp.email({
         name: data.name,
         email: data.email,
         password: data.password,
@@ -38,6 +43,9 @@ export default function SignUpPage() {
                     }
                 }
     })
+
+    })
+   
        
     }
   return (
@@ -91,7 +99,15 @@ export default function SignUpPage() {
                         }
                     </Field>
                 )}/>
-               <Button type='submit' className='mt-6'> Sign Up</Button>
+               <Button disabled={isPending} className='mt-6'> {isPending?(
+                <>
+                <Loader2 className='size-4 animate-spin'/>
+             <span>Creating Account...</span>
+                
+                </>
+               ):(
+                <span>Signup</span>
+               )}</Button>
             </FieldGroup>
 
         </form>
