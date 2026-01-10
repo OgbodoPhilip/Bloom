@@ -8,9 +8,12 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { authClient } from '@/lib/auth-client'
 import z from 'zod'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 
 export default function LoginPage() {
+    const router = useRouter();
      const form = useForm({
             resolver:zodResolver(loginSchema),
             defaultValues: {
@@ -26,6 +29,15 @@ export default function LoginPage() {
                
                 email: data.email,
                 password: data.password,
+                fetchOptions:{
+                    onSuccess:()=>{
+                       toast.success("Logged in successfully")
+                          router.push("/")
+                    },
+                    onError: (error)=>{
+                        toast.error(`Error logging in: ${error.error.message}`)
+                    }
+                }
             })
                
             }
