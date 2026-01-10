@@ -2,8 +2,10 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { buttonVariants } from "../ui/button";
+import { Button, buttonVariants } from "../ui/button";
 import { ThemeToggle } from "./theme-toggle";
+import { useConvexAuth } from "convex/react";
+import { authClient } from "@/lib/auth-client";
 
 
 const links = [
@@ -13,6 +15,7 @@ const links = [
 ]
 
 export default function Navbar() {
+    const {isAuthenticated,isLoading} = useConvexAuth();
   return (
     <nav className="sticky w-full y-5 flex items-center justify-between px-8 py-3  backdrop-blur-md top-0 z-50 ">
       <motion.div
@@ -46,8 +49,17 @@ export default function Navbar() {
     </div>
 
       <div className="flex items-center gap-2 ">
-      <Link className={buttonVariants()} href="/auth/sign-up">Sign Up </Link>
+        {
+            isLoading ? null : isAuthenticated ? (
+               <Button onClick={()=>authClient.signOut({})}> Logout</Button>
+            ) : (
+               <>
+               <Link className={buttonVariants()} href="/auth/sign-up">Sign Up </Link>
       <Link className={buttonVariants({variant:'secondary'})} href="/auth/login">Login </Link>
+               </>
+            )
+        }
+     
       <ThemeToggle/>
       </div>
     </nav>
