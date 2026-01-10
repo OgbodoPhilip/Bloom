@@ -6,6 +6,8 @@ import { signUpSchema } from '@/app/schemas/auth'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { authClient } from '@/lib/auth-client'
+import z from 'zod'
 
 export default function SignUpPage() {
     const form = useForm({
@@ -17,6 +19,15 @@ export default function SignUpPage() {
         }
 
     })
+
+   async function onSubmit(data:z.infer<typeof signUpSchema>){
+    await authClient.signUp.email({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+    })
+       
+    }
   return (
    <Card>
     <CardHeader>
@@ -24,14 +35,16 @@ export default function SignUpPage() {
         <CardDescription>Create an account to get started</CardDescription>
     </CardHeader>
     <CardContent>
-        <form>
-            <FieldGroup>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+            <FieldGroup className='gap-y-2'>
                 <Controller name='name' control={form.control} render={({field,fieldState})=>(
                     <Field>
                         <FieldLabel>
                            Full Name 
                         </FieldLabel>
-                        <Input placeholder="Enter your name" {...field}/>
+                        <Input
+                        aria-invalid={fieldState.invalid} 
+                        placeholder="Enter your name" {...field}/>
                         {
                             fieldState.invalid && (<FieldError errors={[fieldState.error]}/>
                             )
@@ -43,7 +56,9 @@ export default function SignUpPage() {
                         <FieldLabel>
                           Email
                         </FieldLabel>
-                        <Input placeholder="Enter your email" type='email' {...field}/>
+                        <Input
+                          aria-invalid={fieldState.invalid}  
+                        placeholder="Enter your email" type='email' {...field}/>
                         {
                             fieldState.invalid && (<FieldError errors={[fieldState.error]}/>
                             )
@@ -55,14 +70,16 @@ export default function SignUpPage() {
                         <FieldLabel>
                           Password
                         </FieldLabel>
-                        <Input placeholder="Enter your password" type='password' {...field}/>
+                        <Input
+                          aria-invalid={fieldState.invalid} 
+                        placeholder="Enter your password" type='password' {...field}/>
                         {
                             fieldState.invalid && (<FieldError errors={[fieldState.error]}/>
                             )
                         }
                     </Field>
                 )}/>
-                <Button>Sign Up</Button>
+               <Button type='submit' className='mt-6'> Sign Up</Button>
             </FieldGroup>
 
         </form>

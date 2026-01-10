@@ -4,6 +4,7 @@ import "./globals.css";
 
 
 import { ThemeProvider } from "@/components/ui/theme-provider";
+import { ConvexClientProvider } from "@/components/web/ConvexClientProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,7 +39,7 @@ export default function RootLayout({
           >
         <main className=" bg-white dark:bg-black text-black dark:text-white transition-colors duration-500">
          
-        {children}
+             <ConvexClientProvider>{children}</ConvexClientProvider>
 
         </main>
        </ThemeProvider>
