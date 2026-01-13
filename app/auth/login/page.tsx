@@ -13,6 +13,7 @@ import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 import { stat } from 'fs'
 import { Loader2 } from 'lucide-react'
+import Link from 'next/link'
 
 
 export default function LoginPage() {
@@ -52,6 +53,7 @@ export default function LoginPage() {
                
             }
   return (
+    <section>
     <Card>
     <CardHeader>
         <CardTitle>Login</CardTitle>
@@ -103,5 +105,10 @@ export default function LoginPage() {
         </form>
     </CardContent>
    </Card>
+    <div className='flex items-center justify-between'>
+           <p>Don&apos;t have an account ?</p>
+       <Link className='text-xl font-bold text-blue-500' href='/auth/sign-up'>Sign up</Link>
+       </div>
+       </section>
   )
 }

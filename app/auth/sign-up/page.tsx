@@ -13,6 +13,7 @@ import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 import { start } from 'repl'
 import { Loader2 } from 'lucide-react'
+import Link from 'next/link'
 
 export default function SignUpPage() {
       const [isPending,startTransition] = useTransition();
@@ -49,6 +50,7 @@ export default function SignUpPage() {
        
     }
   return (
+    <section>
    <Card>
     <CardHeader>
         <CardTitle>Sign Up</CardTitle>
@@ -111,7 +113,14 @@ export default function SignUpPage() {
             </FieldGroup>
 
         </form>
+        
     </CardContent>
+   
    </Card>
+    <div className='flex items-center justify-between'>
+        <p>Have an account ?</p>
+    <Link className='text-xl font-bold text-blue-500' href='/auth/login'>Login</Link>
+    </div>
+    </section>
   )
 }
