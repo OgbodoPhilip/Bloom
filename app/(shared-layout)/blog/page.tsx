@@ -9,6 +9,10 @@ import Image from "next/image"
 import Link from "next/link"
 import { Suspense } from "react"
 
+
+export const dynamic = 'force-static'
+export const revalidate = false
+
 export default function BlogPage() {
    
    
@@ -38,7 +42,7 @@ async function LoadBlogList(){
                 data?.map((post) => (
                    <Card key={post._id} className="pt-0">
                     <div className="relative h-60 w-full">
-                        <Image src={post.imageUrl ?? 'https://images.unsplash.com/photo-1761839259488-2bdeeae794f5?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D`'} alt="Blog Post Image" fill className="rounded-t-md"/>
+                        <Image src={post.imageUrl ?? 'https://images.unsplash.com/photo-1761839259488-2bdeeae794f5?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D`'} alt="Blog Post Image" fill className="rounded-t-md object-cover"/>
                     </div>
                     <CardContent>
                         <Link href={`/blog/${post._id}`}>
