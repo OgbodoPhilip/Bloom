@@ -5,9 +5,12 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { api } from "@/convex/_generated/api"
 import { fetchQuery } from "convex/nextjs"
 import { Metadata } from "next"
+import { cacheTag } from "next/cache"
+import { cacheLife } from "next/cache"
 
 import Image from "next/image"
 import Link from "next/link"
+import { connection } from "next/server"
 import { Suspense } from "react"
 
 export const metadata: Metadata = {
@@ -15,8 +18,8 @@ export const metadata: Metadata = {
   description: "Tech related blogs from all over the world",
 };
 
-export const dynamic = 'force-static'
-export const revalidate = false
+// export const dynamic = 'force-static'
+// export const revalidate = false
 
 export default function BlogPage() {
    
@@ -40,6 +43,9 @@ export default function BlogPage() {
 
 
 async function LoadBlogList(){
+    'use cache'
+    cacheLife('hours')
+    cacheTag("blog")
     const data = await fetchQuery(api.post.getPosts)
     return (
  <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 px-4">
