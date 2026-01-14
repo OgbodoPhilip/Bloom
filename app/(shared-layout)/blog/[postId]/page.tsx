@@ -10,6 +10,7 @@ import { ArrowLeft } from "lucide-react";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 
 
@@ -47,6 +48,10 @@ const [post,preloadedComments,userId] = await Promise.all([
     await fetchQuery(api.presence.getUserId,{},{token})
 
 ]);
+
+if (!userId){
+    return redirect('/auth/login')
+}
 
 
     if (!post){
