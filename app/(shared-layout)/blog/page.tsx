@@ -10,7 +10,7 @@ import { cacheLife } from "next/cache"
 
 import Image from "next/image"
 import Link from "next/link"
-import { connection } from "next/server"
+
 import { Suspense } from "react"
 
 export const metadata: Metadata = {
@@ -44,8 +44,9 @@ export default function BlogPage() {
 
 async function LoadBlogList(){
     'use cache'
-    cacheLife('hours')
+    cacheLife('seconds')
     cacheTag("blog")
+   
     const data = await fetchQuery(api.post.getPosts)
     return (
  <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 px-4">

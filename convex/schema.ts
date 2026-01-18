@@ -11,11 +11,18 @@ export default defineSchema({
     authorId:v.string(),
     imageStorageId:v.optional(v.id("_storage"))
   
-  }),
+  })
+    .searchIndex('search_title',{
+      searchField:'title'
+    })
+    .searchIndex('search_content',{
+      searchField:'content'
+    }),
   comments:defineTable({
     postId:v.id("posts"),
     authorId:v.string(),
     authorName:v.string(),
      content:v.string(),
-  })
+  }),
+
 });
