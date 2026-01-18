@@ -44,10 +44,10 @@ export default function BlogPage() {
 
 
 async function LoadBlogList(){
-    // 'use cache'
-    // cacheLife('seconds')
-    // cacheTag("blog")
-    await connection()
+    'use cache'
+    cacheLife('seconds')
+    cacheTag("blog")
+  
    
     const data = await fetchQuery(api.post.getPosts)
     return (
