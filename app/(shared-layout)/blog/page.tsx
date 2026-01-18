@@ -10,6 +10,7 @@ import { cacheLife } from "next/cache"
 
 import Image from "next/image"
 import Link from "next/link"
+import { connection } from "next/server"
 
 import { Suspense } from "react"
 
@@ -43,9 +44,10 @@ export default function BlogPage() {
 
 
 async function LoadBlogList(){
-    'use cache'
-    cacheLife('seconds')
-    cacheTag("blog")
+    // 'use cache'
+    // cacheLife('seconds')
+    // cacheTag("blog")
+    await connection()
    
     const data = await fetchQuery(api.post.getPosts)
     return (

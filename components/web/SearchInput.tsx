@@ -22,7 +22,7 @@ export default function SearchInput({}: Props) {
 
     }
   return (
-   <div className="relative w-full max-w-sm">
+   <div className="relative w-full max-w-sm z-10">
     <div className="relative">
         <Search className='absolute left-2.5 top-2.5 size-4 text-muted-foreground'/>
         <Input type='search' placeholder='Search posts...' className='w-full pl-8 bg-background ' value={term} onChange={handleInputChange}/>
@@ -43,7 +43,12 @@ export default function SearchInput({}: Props) {
                         <div className='py-1 '>
                             {
                                 results.map((post)=>(
-                                    <Link className='flex flex-col px-4 py2' href={`/blog/${post._id}`} key={post._id}>
+                                    <Link className='flex flex-col px-4 py2' href={`/blog/${post._id}`} key={post._id}
+                                    onClick={()=>{
+                                        setOpen(false)
+                                        setTerm('')
+                                    }}
+                                    >
                                         <motion.p whileTap={{scale:0.9}} className='font-medium truncate text-blue-500'>{post.title}</motion.p>
                                     
                                     </Link>
