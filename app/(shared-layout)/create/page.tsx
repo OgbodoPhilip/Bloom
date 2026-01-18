@@ -60,40 +60,94 @@ const createPost = useMutation(api.post.createPost);
 //   }
 
 // 2. Updated onSubmit
+
+
+// function onSubmit(values: z.infer<typeof postSchema>) {
+//   startTransition(async () => {
+//     try {
+//       let storageId = undefined;
+
+//       // STEP 1: Upload the image directly from the browser to Convex
+//       // This bypasses the 1MB Next.js Server Action limit
+//       if (values.image instanceof File) {
+//         const uploadUrl = await generateUploadUrl();
+
+//         const result = await fetch(uploadUrl, {
+//           method: "POST",
+//           headers: { "Content-Type": values.image.type },
+//           body: values.image, // The browser sends this directly to Convex
+//         });
+
+//         if (!result.ok) throw new Error("Upload failed");
+        
+//         const json = await result.json();
+//         storageId = json.storageId; // Note: Use lowercase 'storageId' to match Convex response
+//       }
+
+//       // STEP 2: Save the post data and the ID to the database
+//       await createPost({
+//         title: values.title,
+//         body: values.content,
+//         imageStorageId: storageId,
+//       });
+
+//       toast.success("Post created successfully!");
+//       router.push("/blog");
+//     } catch (error) {
+//       console.error(error);
+//       toast.error("Failed to create post. Image might be too large.");
+//     }
+//   });
+// }
+
 function onSubmit(values: z.infer<typeof postSchema>) {
   startTransition(async () => {
     try {
       let storageId = undefined;
 
-      // STEP 1: Upload the image directly from the browser to Convex
-      // This bypasses the 1MB Next.js Server Action limit
+      // STEP 1: Upload the image
       if (values.image instanceof File) {
+        // This call will fail if your Convex/BetterAuth sync is broken on Vercel
         const uploadUrl = await generateUploadUrl();
 
         const result = await fetch(uploadUrl, {
           method: "POST",
           headers: { "Content-Type": values.image.type },
-          body: values.image, // The browser sends this directly to Convex
+          body: values.image,
         });
 
-        if (!result.ok) throw new Error("Upload failed");
+        if (!result.ok) {
+          const errorText = await result.text();
+          throw new Error(`Upload failed: ${errorText}`);
+        }
         
         const json = await result.json();
-        storageId = json.storageId; // Note: Use lowercase 'storageId' to match Convex response
+        storageId = json.storageId; 
       }
 
-      // STEP 2: Save the post data and the ID to the database
+      // STEP 2: Save the post
+      // IMPORTANT: Ensure 'body' here matches 'body' in your mutation args
       await createPost({
         title: values.title,
-        body: values.content,
+        body: values.content, // You pass 'values.content' as 'body' - this matches your post.ts
         imageStorageId: storageId,
       });
 
       toast.success("Post created successfully!");
       router.push("/blog");
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to create post. Image might be too large.");
+    } catch (error: any) {
+      console.error("DEBUG UPLOAD ERROR:", error);
+      
+      // Better error reporting to help you find the root cause
+      const message = error.message || "Something went wrong";
+      
+      if (message.includes("authenticated")) {
+        toast.error("Your session expired. Please log in again.");
+      } else if (message.includes("413")) {
+        toast.error("Image is too large for the network.");
+      } else {
+        toast.error(`Error: ${message}`);
+      }
     }
   });
 }
